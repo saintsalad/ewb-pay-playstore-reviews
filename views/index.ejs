@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+</head>
+<body>
+    <h1><%= message %></h1>
+    <button id="sendEmailBtn">Send email</button>
+</body>
+
+
+<script>
+    const x= "test";
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('sendEmailBtn').addEventListener('click', function() {
+            // Make an AJAX POST request to trigger the function in index.js
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/trigger-function', true);
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                    if (xhr.status === 200) {
+                        console.log(xhr.responseText); // Output the response from the server
+                    } else {
+                        console.error('Error:', xhr.status);
+                    }
+                }
+            };
+            xhr.send();
+        });
+    });
+</script>
+</html>

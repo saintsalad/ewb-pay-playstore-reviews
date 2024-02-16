@@ -5,13 +5,19 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
+    "start": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Cale Adrian",
   "license": "ISC",
   "dependencies": {
+    "cors": "^2.8.5",
+    "ejs": "^3.1.9",
     "express": "^4.18.2",
     "google-play-scraper": "^10.0.0",
     "nodemailer": "^6.9.9"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.3"
   }
 }
