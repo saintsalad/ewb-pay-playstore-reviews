@@ -161,13 +161,13 @@ function generateEmailHTML(reviews) {
 //   console.log(`Proxy server is running on port ${PORT}`);
 // });
 
-// app.listen(8080, '0.0.0.0', () => {
-//   console.log('Server running at http://0.0.0.0:8080/');
-// });
-
-app.listen(PORT, () => {
-  console.log(`Proxy server is running on port ${PORT}`);
+app.listen(8080, "0.0.0.0", () => {
+  console.log("Server running at http://0.0.0.0:8080/");
 });
+
+// app.listen(PORT, () => {
+//   console.log(`Proxy server is running on port ${PORT}`);
+// });
 
 async function getReviews() {
   gplay
