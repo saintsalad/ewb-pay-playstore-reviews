@@ -5,7 +5,7 @@ import gplay from "google-play-scraper";
 import nodemailer from "nodemailer";
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 
@@ -157,13 +157,13 @@ function generateEmailHTML(reviews) {
   return htmlContent;
 }
 
-// app.listen(PORT, () => {
-//   console.log(`Proxy server is running on port ${PORT}`);
-// });
-
-app.listen(8080, "0.0.0.0", () => {
-  console.log("Server running at http://0.0.0.0:8080/");
+app.listen(PORT, () => {
+  console.log(`Proxy server is running on port ${PORT}`);
 });
+
+// app.listen(8080, "0.0.0.0", () => {
+//   console.log("Server running at http://0.0.0.0:8080/");
+// });
 
 // app.listen(PORT, () => {
 //   console.log(`Proxy server is running on port ${PORT}`);
