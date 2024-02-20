@@ -3,9 +3,10 @@ import express from "express";
 import cors from "cors";
 import gplay from "google-play-scraper";
 import nodemailer from "nodemailer";
+import { generateEmailHTML } from "./helper.js";
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3001;
 
 app.use(cors());
 
@@ -15,6 +16,39 @@ app.set("view engine", "ejs");
 // Define a route to render a simple EJS template
 app.get("/", (req, res) => {
   res.render("index", { title: "Express App with EJS", message: "" });
+
+  gplay
+    .reviews({
+      appId: "com.mobile.legends",
+      sort: gplay.sort.NEWEST,
+      num: 100,
+    })
+    .then((data) => {
+      let arr = [];
+      arr = data.data.filter((item) => item.score === 5 || item.score === 4);
+      arr = arr.slice(0, 10);
+
+      if (arr && Array.isArray(arr)) {
+        arr.forEach((arr) => {
+          const reviewDate = new Date(arr.date);
+          const today = new Date();
+          const yesterday = new Date(today);
+          yesterday.setDate(today.getDate() - 1);
+
+          if (
+            reviewDate.getFullYear() === yesterday.getFullYear() &&
+            reviewDate.getMonth() === yesterday.getMonth() &&
+            reviewDate.getDate() === yesterday.getDate()
+          ) {
+            console.log("New");
+            return;
+          } else {
+            console.log("No New");
+            return;
+          }
+        });
+      }
+    });
 });
 
 // Route to handle the AJAX request
@@ -33,8 +67,8 @@ app.post("/trigger-function", (req, res) => {
       res.json(arr);
 
       let mailOptions = {
-        from: '"EWB - Web App" <sender_email@gmail.com>', // Sender name and address
-        to: "keyladrian7@gmail.com", // List of recipients
+        from: '"EASTWEST - WEB APP" <sender_email@gmail.com>', // Sender name and address
+        to: "cslacson@eastwestbanker.com", // List of recipients
         subject: "Playstore Reviews", // Subject line
         html: generateEmailHTML(arr),
       };
@@ -49,17 +83,12 @@ app.post("/trigger-function", (req, res) => {
     });
 });
 
-function myFunction() {
-  console.log("Function triggered from EJS");
-  // Perform actions you want to do when the function is triggered
-}
-
 // Create a transporter object using SMTP transport
 let transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
-    user: "caleadrian.lacson@gmail.com", // Your email address
-    pass: "tdil xwvm mite nood", // Your email password or application-specific password if using Gmail
+    user: "caleadrian.lacson@gmail.com",
+    pass: "tdil xwvm mite nood",
   },
 });
 
@@ -100,89 +129,6 @@ const reviews = [
   },
 ];
 
-// Setup email data with unicode symbols
-function generateEmailHTML(reviews) {
-  let htmlContent = `
-      <!DOCTYPE html>
-      <html lang="en">
-      <head>
-          <meta charset="UTF-8">
-          <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          <title>Email Template</title>
-          <style>
-              /* Minimalist review design */
-              .review {
-                  border: 1px solid #ccc;
-                  padding: 10px;
-                  margin-bottom: 15px;
-                  border-radius: 5px;
-              }
-              .review p {
-                  font-size: 12px;
-                  margin: 2px 0;
-              }
-          </style>
-      </head>
-      <body>
-          <div class="container">
-              <h1>Hello!</h1>
-              <p>This is a sample email template.</p>
-              <div id="reviews-container">
-  `;
-
-  if (reviews && Array.isArray(reviews)) {
-    reviews.forEach((review) => {
-      htmlContent += `
-              <div class="review">
-                  <p><strong>Name:</strong> ${review.userName}</p>
-                  <p><strong>Date Posted:</strong> ${new Date(
-                    review.date
-                  ).toLocaleDateString()}</p>
-                  <p><strong>Score:</strong> ${review.score}</p>
-                  <p><strong>Message:</strong> ${review.text}</p>
-              </div>
-          `;
-    });
-  } else {
-    htmlContent += `<p>No reviews available.</p>`;
-  }
-
-  htmlContent += `
-              </div>
-          </div>
-      </body>
-      </html>
-  `;
-
-  return htmlContent;
-}
-
 app.listen(PORT, () => {
   console.log(`Proxy server is running on port ${PORT}`);
 });
-
-// app.listen(8080, "0.0.0.0", () => {
-//   console.log("Server running at http://0.0.0.0:8080/");
-// });
-
-// app.listen(PORT, () => {
-//   console.log(`Proxy server is running on port ${PORT}`);
-// });
-
-async function getReviews() {
-  gplay
-    .reviews({
-      appId: "com.ewb.contactless",
-      sort: gplay.sort.NEWEST,
-      num: 1,
-    })
-    .then((data) => {
-      const arr = [];
-      arr = data;
-      arr.map((item) => {
-        if (item.score == 4 || item.score == 5) {
-          return item;
-        }
-      });
-    });
-}
