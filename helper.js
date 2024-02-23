@@ -36,7 +36,8 @@ export const generateEmailHTML = (reviews) => {
         </head>
         <body>
             <div class="container">
-                <p>Playstore reviews.</p>
+                <p>
+                Recent PlayStore reviews scoring from 4 to 5.</p>
                 <div id="reviews-container">
     `;
 
