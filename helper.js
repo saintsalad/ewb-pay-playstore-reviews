@@ -195,28 +195,43 @@ export function generateEmailHTML(reviews, appScore, appVersion) {
 }
 
 export async function getAppDetailsViaCheerio(appId) {
+  console.log(`Starting to fetch app details for app ID: ${appId}`);
   try {
-    const url = `https://play.google.com/store/apps/details?id=${appId}`;
+    const url = `https://play.google.com/store/apps/details?id=${appId}&hl=en&gl=PH`;
+    console.log(`Sending request to URL: ${url}`);
+
     const response = await axios.get(url, {
       headers: {
         "User-Agent":
           "Mozilla/5.0 (Linux; Android 10; Mobile) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.120 Mobile Safari/537.36",
+        "Accept-Language": "en-PH,en-US;q=0.9,en;q=0.8",
+        "viewport-width": "360",
       },
     });
+    console.log(`Received response with status: ${response.status}`);
 
     const $ = cheerio.load(response.data);
-    const selector =
-      "c-wiz.SSPGKf.Czez9d > div > div > div:nth-child(1) > div > div:nth-child(1) > div > div > c-wiz > div.hnnXjf > div.JU1wdd > div > div > div:nth-child(1) > div.ClM7O > div > div";
+    console.log("Cheerio loaded the response data");
+
+    // Updated selector based on structure and attributes
+    const selector = 'div[itemprop="starRating"] > div[aria-label^="Rated"]';
     const ratingElement = $(selector);
+    console.log(`Found ${ratingElement.length} elements matching the selector`);
 
     let rating = null;
     if (ratingElement.length > 0) {
       const ratingText = ratingElement.text().trim();
+      console.log(`Raw rating text: "${ratingText}"`);
       rating = parseFloat(ratingText);
+      console.log(`Parsed rating: ${rating}`);
+    } else {
+      console.log("No rating element found");
     }
 
+    console.log(`Returning rating: ${rating}`);
     return { rating };
   } catch (error) {
+    console.error(`Error fetching app details: ${error.message}`);
     return null;
   }
 }

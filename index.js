@@ -12,7 +12,6 @@ app.use(cors());
 
 // Set EJS as the view engine
 app.set("view engine", "ejs");
-app.set("view engine", "ejs");
 
 // Define a route to render a simple EJS template
 app.get("/", (req, res) => {
