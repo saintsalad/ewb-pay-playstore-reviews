@@ -29,14 +29,14 @@ app.get("/", (req, res) => {
         arr = data.data.filter((item) => item.score === 5 || item.score === 4);
         arr = arr.slice(0, items);
 
-        const app = await gplay.app({ appId: appId });
-        let appScore = "";
+        const app = await gplay.app({ appId: appId, country: "ph" });
+        const appScore = app.score;
         const appVersion = app.version;
 
-        const result = await getAppDetailsViaCheerio(appId);
-        if (result) {
-          appScore = result.rating;
-        }
+        // const result = await getAppDetailsViaCheerio(appId);
+        // if (result) {
+        //   appScore = result.rating;
+        // }
 
         const htmlEmailStr = generateEmailHTML(arr, appScore, appVersion);
 
